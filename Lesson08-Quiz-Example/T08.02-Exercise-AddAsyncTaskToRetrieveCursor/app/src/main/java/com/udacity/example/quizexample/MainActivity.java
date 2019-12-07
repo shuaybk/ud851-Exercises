@@ -21,6 +21,7 @@ import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
@@ -109,6 +110,7 @@ public class MainActivity extends AppCompatActivity {
         protected Cursor doInBackground(Void... voids) {
             ContentResolver resolver = getContentResolver();
             Cursor cursor = resolver.query(DroidTermsExampleContract.CONTENT_URI, null, null, null, null);
+            Log.d("Main - AsyncTask", DroidTermsExampleContract.CONTENT_URI.toString());
             return cursor;
         }
 
@@ -116,6 +118,16 @@ public class MainActivity extends AppCompatActivity {
         protected void onPostExecute(Cursor result) {
             super.onPostExecute(result);
             mData = result;
+
+            int wordCol = mData.getColumnIndex(DroidTermsExampleContract.COLUMN_WORD);
+            int defCol = mData.getColumnIndex(DroidTermsExampleContract.COLUMN_DEFINITION);
+
+            while (mData.moveToNext()) {
+                String word = mData.getString(wordCol);
+                String definition = mData.getString(defCol);
+                Log.v("Cursor Example", word + "-" + definition);
+            }
+            mData.close();
         }
     }
 
